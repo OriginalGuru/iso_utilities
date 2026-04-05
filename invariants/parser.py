@@ -2,14 +2,19 @@
 parser.py
 Builds variable name maps from irrep labels and dimensions,
 applies substitution to raw iso polynomials, and handles TRS filtering.
+
+Substitution wraps each variable token in parentheses: n1 -> (GM2m_a).
+This makes implicit multiplication explicit and unambiguous for all output
+modes — adjacency between tokens always appears as )( or )^N( which each
+output module converts to its appropriate separator.
 """
 
 import re
 from typing import Dict, List, Optional, Set, Tuple
 
 
-# a, b, c, ... z, aa, ab, ... (enough for any realistic case)
 def _index_labels(n: int) -> List[str]:
+    """Generate component labels: a, b, c, ..., z, aa, ab, ..."""
     labels = []
     i = 0
     while len(labels) < n:
@@ -48,11 +53,11 @@ def build_variable_map(
 
     Returns:
         dict mapping iso name (e.g. 'n1') -> {
-            'display': 'GM6-_a',      # for human-readable / LaTeX output
-            'code':    'GM6m_a',      # for Python / Mathematica output
-            'irrep':   'GM6-',        # stripped irrep label
-            'magnetic': True/False,   # whether this irrep had 'm' prefix
-            'component': 'a',         # component label
+            'display': 'GM6-_a',   # for human-readable / LaTeX output
+            'code':    'GM6m_a',   # for Python / Mathematica output
+            'irrep':   'GM6-',     # stripped irrep label
+            'magnetic': bool,      # whether this irrep had 'm' prefix
+            'component': 'a',      # component label
         }
     """
     var_map = {}
@@ -94,17 +99,13 @@ def build_variable_map(
 
 def _substitute_polynomial(polynomial: str, var_map: Dict[str, dict], mode: str) -> str:
     """
-    Replace iso generic variable names (n1, n2, ...) with physical names.
+    Replace iso generic variable names (n1, n2, ...) with parenthesised physical names.
 
-    In iso output, nN tokens are never preceded by a letter — only by a digit
-    (exponent or coefficient), ^, space, +, -, or start of string. The two-branch
-    pattern handles both cases:
-      - preceded by a digit (e.g. n2 in '2n2^2' or 'n1^2n2^2')
-      - not preceded by a letter (e.g. n2 at start of term)
+    Each token nN is replaced with (name), e.g. n1 -> (GM2m_a).
+    This makes implicit multiplication explicit: adjacent tokens always appear
+    as )( or )^N( which output modules convert to their appropriate separator.
 
-    Substitution is done in a single pass on the raw polynomial, so substituted
-    names (which may contain letters) never interfere with subsequent matches.
-    Longest keys first ensures n10 is matched before n1.
+    Single-pass substitution sorted longest-first so n10 matches before n1.
     """
     sorted_keys = sorted(var_map.keys(), key=lambda k: -len(k))
     alts = '|'.join(re.escape(k) for k in sorted_keys)
@@ -114,7 +115,7 @@ def _substitute_polynomial(polynomial: str, var_map: Dict[str, dict], mode: str)
 
     def replacer(match):
         token = match.group(1) or match.group(2)
-        return var_map[token][mode]
+        return '(' + var_map[token][mode] + ')'
 
     return pattern.sub(replacer, polynomial)
 
@@ -126,7 +127,7 @@ def substitute_invariants(
 ) -> List[dict]:
     """
     Apply variable substitution to a list of invariant dicts.
-    Returns new list with 'polynomial' replaced.
+    Returns new list with 'polynomial' replaced (tokens wrapped in parentheses).
     mode: 'display' or 'code'
     """
     result = []
@@ -146,8 +147,9 @@ def _get_magnetic_names(var_map: Dict[str, dict], mode: str) -> Set[str]:
 def _monomial_magnetic_power(monomial: str, magnetic_names: Set[str]) -> int:
     """
     Compute total power of magnetic variables in a single monomial term.
-    Handles forms like: GM6m_a^2, GM6m_a (implicit power 1), 3GM6m_a^2 (with coefficient).
+    Strips parentheses before analysis.
     """
+    monomial = monomial.replace('(', '').replace(')', '')
     total = 0
     for name in magnetic_names:
         escaped = re.escape(name)
@@ -162,8 +164,7 @@ def _monomial_magnetic_power(monomial: str, magnetic_names: Set[str]) -> int:
 def _polynomial_magnetic_power(polynomial: str, magnetic_names: Set[str]) -> int:
     """
     Return total magnetic variable power for a polynomial line.
-    Raises if monomials within a line have mixed parity (should not happen
-    since iso enforces space group symmetry).
+    Raises if monomials within a line have mixed parity (should not happen).
     """
     terms = re.split(r'\s+[+-]\s+', polynomial)
     powers = [_monomial_magnetic_power(t, magnetic_names) for t in terms]

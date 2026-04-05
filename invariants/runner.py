@@ -50,7 +50,7 @@ def _build_dim_input(parent: int, irrep: str) -> str:
         f"VALUE IRREP {irrep}\n"
         f"SHOW DIMENSION\n"
         f"PAGE NOBREAK\n"
-        f"SCREEN 340\n"
+        f"SCREEN 1000\n"
         f"DISPLAY IRREP\n"
         f"QUIT\n"
     )
@@ -68,7 +68,7 @@ def _build_invariants_input(parent: int, irreps: list[str], degree: tuple[int, i
         f"VALUE PARENT {parent}\n"
         f"VALUE IRREP {irrep_str}\n"
         f"PAGE NOBREAK\n"
-        f"SCREEN 340\n"
+        f"SCREEN 1000\n"
         f"VALUE DEGREE {deg_str}\n"
         f"DISPLAY INVARIANT\n"
         f"QUIT\n"
