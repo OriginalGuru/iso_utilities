@@ -39,9 +39,9 @@ def parse_args():
     p.add_argument("--condense", nargs="+", required=True,
                    help="Variables to condense. Format: VAR:VAR0 e.g. Pz:Pz0 or Pz:Pz0 Mz:Mz0")
     p.add_argument("--formats", nargs="+",
-                   choices=["md", "py"],
-                   default=["md", "py"],
-                   help="Output formats to generate (default: md py)")
+                   choices=["md", "py", "nb", "tex"],
+                   default=["md", "py", "nb", "tex"],
+                   help="Output formats to generate (default: all)")
     p.add_argument("--max-degree", type=int, default=None,
                    help="Truncate output to invariants with total dynamic degree <= this value. "
                         "Applied after condensation so renormalized coefficients are exact.")
@@ -341,6 +341,141 @@ def write_py(
     print(f"  Written: {outpath}")
 
 
+def write_nb(
+    outpath,
+    indir,
+    condensations,
+    static_syms,
+    dynamic_vars,
+    invariants,
+    namespace,
+):
+    """Write Mathematica notebook output."""
+    cond_str = ", ".join(f"{v} -> {s}+d{v}" for v, s in condensations)
+
+    orig_coeff_names = sorted([
+        k for k, v in namespace.items()
+        if isinstance(v, sp.Symbol) and (k.startswith('alpha') or k.startswith('c'))
+        and not k.startswith('__')
+    ], key=lambda x: (len(x), x))
+
+    static_names = [s.name for s in static_syms]
+    dynamic_names = [v.name for v in dynamic_vars]
+
+    def to_nb(expr):
+        return sp.mathematica_code(expr)
+
+    lines = [
+        '(* Content-type: application/vnd.wolfram.mathematica *)',
+        '',
+        'Notebook[{',
+        f'Cell[TextData[{{"Condensed Invariant Polynomials\\nSource: {indir}\\nCondensation: {cond_str}"}}], "Title"],',
+        '',
+        f'Cell[BoxData["{{{", ".join(dynamic_names + static_names)}}}"], "Input"],',
+        '',
+        'Cell[BoxData["',
+    ]
+    coeff_lines = []
+    for inv in invariants:
+        coeff_lines.append(f'{inv["coeff_name"]} = {to_nb(inv["coefficient"])}')
+    lines.append('\n'.join(coeff_lines))
+    lines += ['"], "Input"],', '']
+    lines += ['Cell[BoxData["invariants = {']
+    for inv in invariants:
+        lines.append(f'  {to_nb(inv["polynomial"])},  (* deg {inv["degree"]} *)')
+    lines += ['};"], "Input"],', '']
+    lines += ['Cell[BoxData["F = (']
+    for i, inv in enumerate(invariants):
+        sep = ' +' if i < len(invariants) - 1 else ''
+        lines.append(f'  {inv["coeff_name"]} * ({to_nb(inv["polynomial"])}){sep}')
+    lines += [');"], "Input"]', '', '}, WindowSize->{1200, 800}]']
+
+    outpath.write_text('\n'.join(lines) + '\n')
+    print(f"  Written: {outpath}")
+
+
+def write_tex(
+    outpath,
+    indir,
+    condensations,
+    static_syms,
+    dynamic_vars,
+    invariants,
+    namespace,
+):
+    """Write LaTeX output."""
+    from collections import defaultdict as ddict
+
+    cond_str = ", ".join(
+        f"${sp.latex(sp.Symbol(v))} \\to {sp.latex(sp.Symbol(s))} + {sp.latex(sp.Symbol('d'+v))}$"
+        for v, s in condensations
+    )
+    static_latex = ", ".join(f"${sp.latex(s)}$" for s in static_syms)
+    dynamic_latex = ", ".join(f"${sp.latex(v)}$" for v in dynamic_vars)
+
+    orig_coeff_names = sorted([
+        k for k, v in namespace.items()
+        if isinstance(v, sp.Symbol) and (k.startswith('alpha') or k.startswith('c'))
+        and not k.startswith('__')
+    ], key=lambda x: (len(x), x))
+
+    lines = [
+        r'\documentclass{article}',
+        r'\usepackage{amsmath}',
+        r'\usepackage{booktabs}',
+        r'\begin{document}',
+        '',
+        r'\section*{Condensed Invariant Polynomials}',
+        '',
+        r'\begin{tabular}{ll}',
+        r'\toprule',
+        f'Source & \\texttt{{{indir}}} \\\\',
+        f'Condensation & {cond_str} \\\\',
+        f'Static variables & {static_latex} \\\\',
+        f'Dynamic variables & {dynamic_latex} \\\\',
+        f'New invariants & {len(invariants)} \\\\',
+        r'\bottomrule',
+        r'\end{tabular}',
+        '',
+        r'\subsection*{New Invariants}',
+        '',
+        r'\begin{align*}',
+    ]
+
+    by_degree = ddict(list)
+    for inv in invariants:
+        by_degree[inv['degree']].append(inv)
+
+    for deg in sorted(by_degree.keys()):
+        for inv in by_degree[deg]:
+            lines.append(f'I_{{{inv["index"]}}} &= {sp.latex(inv["polynomial"])} \\\\')
+
+    lines += [r'\end{align*}', '']
+    lines += [
+        r'\subsection*{Condensed Free Energy}',
+        '',
+        r'\begin{align*}',
+        r'F &= \\',
+    ]
+    for i, inv in enumerate(invariants):
+        sep = r' \\' if i < len(invariants) - 1 else ''
+        coeff_latex = sp.latex(sp.Symbol(inv['coeff_name']))
+        lines.append(f'&\\quad {coeff_latex} \\left({sp.latex(inv["polynomial"])}\\right){sep}')
+    lines += [r'\end{align*}', '']
+
+    lines += [
+        r'\subsection*{Coefficient Mapping}',
+        '',
+        r'\begin{align*}',
+    ]
+    for inv in invariants:
+        coeff_latex = sp.latex(sp.Symbol(inv['coeff_name']))
+        lines.append(f'{coeff_latex} &= {sp.latex(inv["coefficient"])} \\\\')
+    lines += [r'\end{align*}', '', r'\end{document}']
+
+    outpath.write_text('\n'.join(lines) + '\n')
+    print(f"  Written: {outpath}")
+
 def main():
     args = parse_args()
     condensations = parse_condense(args.condense)
@@ -430,6 +565,28 @@ def main():
     if "py" in args.formats:
         write_py(
             outpath=indir / f"{stem}.py",
+            indir=indir,
+            condensations=condensations,
+            static_syms=static_syms,
+            dynamic_vars=dynamic_vars,
+            invariants=invariants,
+            namespace=namespace,
+        )
+
+    if "nb" in args.formats:
+        write_nb(
+            outpath=indir / f"{stem}.nb",
+            indir=indir,
+            condensations=condensations,
+            static_syms=static_syms,
+            dynamic_vars=dynamic_vars,
+            invariants=invariants,
+            namespace=namespace,
+        )
+
+    if "tex" in args.formats:
+        write_tex(
+            outpath=indir / f"{stem}.tex",
             indir=indir,
             condensations=condensations,
             static_syms=static_syms,
