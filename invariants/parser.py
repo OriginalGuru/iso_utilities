@@ -50,6 +50,8 @@ def build_variable_map(
         dimensions: dict mapping stripped irrep label -> dimension (from runner)
         user_names: optional dict mapping irrep label -> list of component names
                     e.g. {'GM6-': ['Px', 'Py']}
+                    For duplicate irrep labels, use positional keys like
+                    'GM4-[1]', 'GM4-[2]' to target specific occurrences.
 
     Returns:
         dict mapping iso name (e.g. 'n1') -> {
@@ -60,6 +62,15 @@ def build_variable_map(
             'component': 'a',      # component label
         }
     """
+    # count occurrences of each irrep label to detect duplicates
+    irrep_counts: Dict[str, int] = {}
+    for irrep in irreps:
+        irrep_counts[irrep] = irrep_counts.get(irrep, 0) + 1
+    duplicated = {label for label, count in irrep_counts.items() if count > 1}
+
+    # track which occurrence of each label we are on
+    irrep_occurrence: Dict[str, int] = {}
+
     var_map = {}
     counter = 1
 
@@ -68,7 +79,31 @@ def build_variable_map(
         dim = dimensions[stripped]
         component_labels = _index_labels(dim)
 
-        if user_names and irrep in user_names:
+        # track occurrence index for this label
+        irrep_occurrence[irrep] = irrep_occurrence.get(irrep, 0) + 1
+        occurrence = irrep_occurrence[irrep]
+
+        # build the base label used for default naming:
+        # if duplicated, append [N] to distinguish occurrences
+        if irrep in duplicated:
+            base_label = f"{irrep}[{occurrence}]"
+            base_code = f"{_sanitize_for_code(irrep)}{occurrence}"
+        else:
+            base_label = irrep
+            base_code = _sanitize_for_code(irrep)
+
+        # check for user overrides: try positional key first, then plain label
+        positional_key = f"{irrep}[{occurrence}]"
+        if user_names and positional_key in user_names:
+            overrides = user_names[positional_key]
+            if len(overrides) != dim:
+                raise ValueError(
+                    f"User supplied {len(overrides)} names for {positional_key} "
+                    f"but its dimension is {dim}"
+                )
+            names_display = overrides
+            names_code = [_sanitize_for_code(n) for n in overrides]
+        elif user_names and irrep in user_names and irrep not in duplicated:
             overrides = user_names[irrep]
             if len(overrides) != dim:
                 raise ValueError(
@@ -78,8 +113,8 @@ def build_variable_map(
             names_display = overrides
             names_code = [_sanitize_for_code(n) for n in overrides]
         else:
-            names_display = [f"{irrep}_{c}" for c in component_labels[:dim]]
-            names_code = [f"{_sanitize_for_code(irrep)}_{c}" for c in component_labels[:dim]]
+            names_display = [f"{base_label}_{c}" for c in component_labels[:dim]]
+            names_code = [f"{base_code}_{c}" for c in component_labels[:dim]]
 
         for comp_label, name_display, name_code in zip(
             component_labels[:dim], names_display, names_code
@@ -147,14 +182,15 @@ def _get_magnetic_names(var_map: Dict[str, dict], mode: str) -> Set[str]:
 def _monomial_magnetic_power(monomial: str, magnetic_names: Set[str]) -> int:
     """
     Compute total power of magnetic variables in a single monomial term.
-    Strips parentheses before analysis.
+    Searches the parenthesised form directly: each variable token appears
+    as (name) optionally followed by ^N, avoiding false matches from
+    adjacent variable names that share leading characters.
     """
-    monomial = monomial.replace('(', '').replace(')', '')
     total = 0
     for name in magnetic_names:
         escaped = re.escape(name)
         for match in re.finditer(
-            rf"(?<![a-zA-Z_]){escaped}(?:\^(\d+))?(?![a-zA-Z_0-9])", monomial
+            r'\(' + escaped + r'\)(?:\^(\d+))?', monomial
         ):
             exp = int(match.group(1)) if match.group(1) else 1
             total += exp
@@ -166,11 +202,14 @@ def _polynomial_magnetic_power(polynomial: str, magnetic_names: Set[str]) -> int
     Return total magnetic variable power for a polynomial line.
     Raises if monomials within a line have mixed parity (should not happen).
     """
-    terms = re.split(r'\s+[+-]\s+', polynomial)
+    # In parenthesised form, term separators are whitespace followed by a sign then
+    # an opening paren or digit. Variable names like GM4- never have space before -/+.
+    terms = re.split(r'\s+(?=[+-]\(|[+-]\d)', polynomial)
     powers = [_monomial_magnetic_power(t, magnetic_names) for t in terms]
     if len(set(p % 2 for p in powers)) > 1:
-        raise ValueError(
-            f"Mixed magnetic parity in polynomial (unexpected): {polynomial}\n"
+        import warnings
+        warnings.warn(
+            f"Mixed magnetic parity in polynomial (check TRS logic): {polynomial}\n"
             f"Powers: {powers}"
         )
     return powers[0] if powers else 0

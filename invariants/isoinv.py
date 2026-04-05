@@ -31,11 +31,14 @@ def parse_args():
     p.add_argument("--parent", type=int, required=True,
                    help="Parent space group number")
     p.add_argument("--irreps", nargs="+", required=True,
-                   help="Irrep labels (e.g. GM2- mGM6- A1). Prefix 'm' denotes magnetic irrep.")
+                   help=(
+                       "Irrep labels, optionally with variable name overrides. "
+                       "Format: IRREP or IRREP:name1,name2,... "
+                       "Prefix 'm' denotes magnetic irrep. "
+                       "Examples: GM2- GM6-:Px,Py mA1:Mx GM4-:Ex,Ey,Ez GM4-:Px,Py,Pz"
+                   ))
     p.add_argument("--degree", type=int, nargs="+", required=True,
                    help="Degree or degree range. One value: exact. Two values: min max.")
-    p.add_argument("--names", nargs="*", default=None,
-                   help="Variable name overrides. Format: IRREP:name1,name2,... e.g. GM6-:Px,Py")
     p.add_argument("--iso-exec", default="iso",
                    help="Path to iso executable (default: 'iso', assumed on PATH)")
     p.add_argument("--formats", nargs="+",
@@ -55,6 +58,71 @@ def parse_args():
     return p.parse_args()
 
 
+def parse_irreps(irrep_args: List[str]) -> Tuple[List[str], Optional[Dict[str, List[str]]]]:
+    """
+    Parse --irreps arguments which may contain optional name overrides.
+
+    Each argument is either:
+      - 'GM2-'           -> irrep label only, use default naming
+      - 'GM6-:Px,Py'     -> irrep label with name overrides
+
+    For duplicate irrep labels, names are assigned positionally:
+      'GM4-:Ex,Ey,Ez GM4-:Px,Py,Pz' -> GM4-[1] gets Ex,Ey,Ez; GM4-[2] gets Px,Py,Pz
+
+    Returns:
+        (irreps, user_names) where irreps is a plain list of labels (no colons)
+        and user_names is a dict mapping positional keys to name lists,
+        or None if no overrides were given.
+    """
+    irreps = []
+    raw_names = {}  # label -> list of name lists in order of appearance
+    has_any_names = False
+
+    for arg in irrep_args:
+        if ":" in arg:
+            label, names_str = arg.split(":", 1)
+            names = names_str.split(",")
+            has_any_names = True
+        else:
+            label = arg
+            names = None
+
+        irreps.append(label)
+
+        if label not in raw_names:
+            raw_names[label] = []
+        raw_names[label].append(names)
+
+    if not has_any_names:
+        return irreps, None
+
+    # build positional user_names dict
+    # track occurrence index per label
+    occurrence: Dict[str, int] = {}
+    user_names: Dict[str, List[str]] = {}
+
+    for arg in irrep_args:
+        if ":" in arg:
+            label, names_str = arg.split(":", 1)
+        else:
+            label = arg
+
+        occurrence[label] = occurrence.get(label, 0) + 1
+        idx = occurrence[label]
+
+        # check if this label appears more than once total
+        total = len(raw_names[label])
+        if total > 1:
+            key = f"{label}[{idx}]"
+        else:
+            key = label
+
+        if ":" in arg:
+            user_names[key] = arg.split(":", 1)[1].split(",")
+
+    return irreps, user_names if user_names else None
+
+
 def parse_degree(degree_args: List[int]) -> Tuple[int, int]:
     if len(degree_args) == 1:
         return (degree_args[0], degree_args[0])
@@ -63,20 +131,6 @@ def parse_degree(degree_args: List[int]) -> Tuple[int, int]:
     else:
         print("Error: --degree takes one or two integers.", file=sys.stderr)
         sys.exit(1)
-
-
-def parse_user_names(names_args: Optional[List[str]]) -> Optional[Dict[str, List[str]]]:
-    if not names_args:
-        return None
-    result = {}
-    for item in names_args:
-        if ":" not in item:
-            print(f"Error: --names entries must be IRREP:name1,name2,...  Got: {item}",
-                  file=sys.stderr)
-            sys.exit(1)
-        irrep, names_str = item.split(":", 1)
-        result[irrep] = names_str.split(",")
-    return result
 
 
 def make_stem(parent: int, irreps: List[str], degree: Tuple[int, int]) -> str:
@@ -91,17 +145,17 @@ def make_stem(parent: int, irreps: List[str], degree: Tuple[int, int]) -> str:
 def main():
     args = parse_args()
     degree = parse_degree(args.degree)
-    user_names = parse_user_names(args.names)
+    irreps, user_names = parse_irreps(args.irreps)
 
     # --- Set up output directory early (needed for debug paths) ---
-    stem = make_stem(args.parent, args.irreps, degree)
+    stem = make_stem(args.parent, irreps, degree)
     outdir = Path(args.outdir) if args.outdir else Path(stem)
     outdir.mkdir(parents=True, exist_ok=True)
 
     # --- Step 1: dimension queries ---
     stripped_irreps = []
     seen = {}
-    for irrep in args.irreps:
+    for irrep in irreps:
         _, stripped = _strip_magnetic(irrep)
         if stripped not in seen:
             seen[stripped] = True
@@ -120,14 +174,14 @@ def main():
             print(f"    (iso.log saved to {debug_path})")
 
     # --- Step 2: variable map ---
-    var_map = build_variable_map(args.irreps, dimensions, user_names)
+    var_map = build_variable_map(irreps, dimensions, user_names)
     print("\nVariable map (iso name -> display name):")
     for iso_name, info in var_map.items():
         mag_tag = " [magnetic]" if info["magnetic"] else ""
         print(f"  {iso_name} -> {info['display']}{mag_tag}")
 
     # --- Step 3: invariants ---
-    stripped_for_iso = [_strip_magnetic(r)[1] for r in args.irreps]
+    stripped_for_iso = [_strip_magnetic(r)[1] for r in irreps]
     print(f"\nQuerying invariants (degree {degree[0]}-{degree[1]})...")
     debug_path = outdir / "debug_invariants.log" if args.debug else None
     raw_invariants = get_invariants(
@@ -182,7 +236,7 @@ def main():
             writer_fn(
                 outpath=outpath,
                 parent=args.parent,
-                irreps=args.irreps,
+                irreps=irreps,
                 degree=degree,
                 var_map=var_map,
                 invariants=invariants,
