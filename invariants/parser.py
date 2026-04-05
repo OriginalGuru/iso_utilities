@@ -5,10 +5,11 @@ applies substitution to raw iso polynomials, and handles TRS filtering.
 """
 
 import re
+from typing import Dict, List, Optional, Set, Tuple
 
 
 # a, b, c, ... z, aa, ab, ... (enough for any realistic case)
-def _index_labels(n: int) -> list[str]:
+def _index_labels(n: int) -> List[str]:
     labels = []
     i = 0
     while len(labels) < n:
@@ -19,7 +20,7 @@ def _index_labels(n: int) -> list[str]:
     return labels
 
 
-def _strip_magnetic(irrep: str) -> tuple[bool, str]:
+def _strip_magnetic(irrep: str) -> Tuple[bool, str]:
     """Return (is_magnetic, stripped_label)."""
     if irrep.startswith("m"):
         return True, irrep[1:]
@@ -32,10 +33,10 @@ def _sanitize_for_code(label: str) -> str:
 
 
 def build_variable_map(
-    irreps: list[str],
-    dimensions: dict[str, int],
-    user_names: dict[str, list[str]] | None = None,
-) -> dict[str, dict]:
+    irreps: List[str],
+    dimensions: Dict[str, int],
+    user_names: Optional[Dict[str, List[str]]] = None,
+) -> Dict[str, dict]:
     """
     Build variable map from iso generic names (n1, n2, ...) to physical names.
 
@@ -62,7 +63,6 @@ def build_variable_map(
         dim = dimensions[stripped]
         component_labels = _index_labels(dim)
 
-        # check for user overrides
         if user_names and irrep in user_names:
             overrides = user_names[irrep]
             if len(overrides) != dim:
@@ -92,34 +92,38 @@ def build_variable_map(
     return var_map
 
 
-def _substitute_polynomial(polynomial: str, var_map: dict[str, dict], mode: str) -> str:
+def _substitute_polynomial(polynomial: str, var_map: Dict[str, dict], mode: str) -> str:
     """
     Replace iso generic variable names (n1, n2, ...) with physical names.
 
-    mode: 'display' for human-readable/LaTeX, 'code' for Python/Mathematica.
+    In iso output, nN tokens are never preceded by a letter — only by a digit
+    (exponent or coefficient), ^, space, +, -, or start of string. The two-branch
+    pattern handles both cases:
+      - preceded by a digit (e.g. n2 in '2n2^2' or 'n1^2n2^2')
+      - not preceded by a letter (e.g. n2 at start of term)
 
-    Substitution is done longest-key-first to avoid n1 matching inside n10, n11, etc.
+    Substitution is done in a single pass on the raw polynomial, so substituted
+    names (which may contain letters) never interfere with subsequent matches.
+    Longest keys first ensures n10 is matched before n1.
     """
-    # sort by descending length of key to avoid partial matches
     sorted_keys = sorted(var_map.keys(), key=lambda k: -len(k))
+    alts = '|'.join(re.escape(k) for k in sorted_keys)
+    pattern = re.compile(
+        r'(?<=\d)(' + alts + r')|(?<![a-zA-Z])(' + alts + r')'
+    )
 
-    result = polynomial
-    for iso_name in sorted_keys:
-        name = var_map[iso_name][mode]
-        # use word-boundary-aware replacement: nN must not be followed by a digit
-        result = re.sub(
-            rf"\b{re.escape(iso_name)}(?!\d)",
-            name,
-            result,
-        )
-    return result
+    def replacer(match):
+        token = match.group(1) or match.group(2)
+        return var_map[token][mode]
+
+    return pattern.sub(replacer, polynomial)
 
 
 def substitute_invariants(
-    invariants: list[dict],
-    var_map: dict[str, dict],
+    invariants: List[dict],
+    var_map: Dict[str, dict],
     mode: str,
-) -> list[dict]:
+) -> List[dict]:
     """
     Apply variable substitution to a list of invariant dicts.
     Returns new list with 'polynomial' replaced.
@@ -134,12 +138,12 @@ def substitute_invariants(
     return result
 
 
-def _get_magnetic_names(var_map: dict[str, dict], mode: str) -> set[str]:
+def _get_magnetic_names(var_map: Dict[str, dict], mode: str) -> Set[str]:
     """Return set of variable names (in given mode) that belong to magnetic irreps."""
     return {v[mode] for v in var_map.values() if v["magnetic"]}
 
 
-def _monomial_magnetic_power(monomial: str, magnetic_names: set[str]) -> int:
+def _monomial_magnetic_power(monomial: str, magnetic_names: Set[str]) -> int:
     """
     Compute total power of magnetic variables in a single monomial term.
     Handles forms like: GM6m_a^2, GM6m_a (implicit power 1), 3GM6m_a^2 (with coefficient).
@@ -147,22 +151,20 @@ def _monomial_magnetic_power(monomial: str, magnetic_names: set[str]) -> int:
     total = 0
     for name in magnetic_names:
         escaped = re.escape(name)
-        # match name optionally followed by ^N
-        for match in re.finditer(rf"(?<![a-zA-Z_]){escaped}(?:\^(\d+))?(?![a-zA-Z_0-9])", monomial):
+        for match in re.finditer(
+            rf"(?<![a-zA-Z_]){escaped}(?:\^(\d+))?(?![a-zA-Z_0-9])", monomial
+        ):
             exp = int(match.group(1)) if match.group(1) else 1
             total += exp
     return total
 
 
-def _polynomial_magnetic_power(polynomial: str, magnetic_names: set[str]) -> int | None:
+def _polynomial_magnetic_power(polynomial: str, magnetic_names: Set[str]) -> int:
     """
-    Split polynomial into monomial terms and check that all have the same
-    magnetic parity. Returns total magnetic power if consistent, raises if not.
-    Since iso enforces space group symmetry, all monomials in a line should
-    have the same parity — this checks that assumption.
+    Return total magnetic variable power for a polynomial line.
+    Raises if monomials within a line have mixed parity (should not happen
+    since iso enforces space group symmetry).
     """
-    # split on + and - that separate terms (not exponents)
-    # terms are separated by ' +' or ' -' (with spaces)
     terms = re.split(r'\s+[+-]\s+', polynomial)
     powers = [_monomial_magnetic_power(t, magnetic_names) for t in terms]
     if len(set(p % 2 for p in powers)) > 1:
@@ -174,18 +176,18 @@ def _polynomial_magnetic_power(polynomial: str, magnetic_names: set[str]) -> int
 
 
 def apply_trs_filter(
-    invariants: list[dict],
-    var_map: dict[str, dict],
+    invariants: List[dict],
+    var_map: Dict[str, dict],
     mode: str,
-) -> list[dict]:
+) -> List[dict]:
     """
-    Filter invariants to keep only those where total magnetic variable power is even.
+    Filter invariants keeping only those where total magnetic variable power is even.
     Operates on already-substituted invariants.
     mode: 'display' or 'code' — must match the mode used in substitute_invariants.
     """
     magnetic_names = _get_magnetic_names(var_map, mode)
     if not magnetic_names:
-        return invariants  # no magnetic irreps, nothing to filter
+        return invariants
 
     filtered = []
     for inv in invariants:

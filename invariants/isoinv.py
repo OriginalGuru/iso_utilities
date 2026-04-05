@@ -10,6 +10,7 @@ Full output module to follow once core is verified.
 
 import argparse
 import sys
+from typing import Dict, List, Optional, Tuple
 from runner import get_irrep_dimension, get_invariants
 from parser import (
     build_variable_map,
@@ -64,7 +65,7 @@ def parse_args():
     return p.parse_args()
 
 
-def parse_degree(degree_args: list[int]) -> tuple[int, int]:
+def parse_degree(degree_args: List[int]) -> Tuple[int, int]:
     if len(degree_args) == 1:
         return (degree_args[0], degree_args[0])
     elif len(degree_args) == 2:
@@ -74,7 +75,7 @@ def parse_degree(degree_args: list[int]) -> tuple[int, int]:
         sys.exit(1)
 
 
-def parse_user_names(names_args: list[str] | None) -> dict[str, list[str]] | None:
+def parse_user_names(names_args: Optional[List[str]]) -> Optional[Dict[str, List[str]]]:
     if not names_args:
         return None
     result = {}
@@ -88,7 +89,7 @@ def parse_user_names(names_args: list[str] | None) -> dict[str, list[str]] | Non
     return result
 
 
-def make_outdir_name(parent: int, irreps: list[str], degree: tuple[int, int]) -> str:
+def make_outdir_name(parent: int, irreps: List[str], degree: Tuple[int, int]) -> str:
     def sanitize(label: str) -> str:
         return label.replace("+", "p").replace("-", "m")
     irrep_str = "_".join(sanitize(r) for r in irreps)
@@ -97,7 +98,7 @@ def make_outdir_name(parent: int, irreps: list[str], degree: tuple[int, int]) ->
     return f"sg{parent}__{irrep_str}__{deg_str}"
 
 
-def make_filename_stem(parent: int, irreps: list[str], degree: tuple[int, int]) -> str:
+def make_filename_stem(parent: int, irreps: List[str], degree: Tuple[int, int]) -> str:
     return make_outdir_name(parent, irreps, degree)
 
 
