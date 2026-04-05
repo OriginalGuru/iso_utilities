@@ -48,6 +48,10 @@ def parse_args():
                    help="Coefficient prefix for collapsed polynomial (default: 'c' -> c1, c2, ...)")
     p.add_argument("--outdir", default=None,
                    help="Output directory (default: sg{N}__{irreps}__{deg}/)")
+    p.add_argument("--debug", action="store_true",
+                   help="Save iso.log from each iso call into the output directory")
+    p.add_argument("--debug-only", action="store_true",
+                   help="Save iso.log files but skip all output file writing")
     return p.parse_args()
 
 
@@ -89,6 +93,11 @@ def main():
     degree = parse_degree(args.degree)
     user_names = parse_user_names(args.names)
 
+    # --- Set up output directory early (needed for debug paths) ---
+    stem = make_stem(args.parent, args.irreps, degree)
+    outdir = Path(args.outdir) if args.outdir else Path(stem)
+    outdir.mkdir(parents=True, exist_ok=True)
+
     # --- Step 1: dimension queries ---
     stripped_irreps = []
     seen = {}
@@ -101,9 +110,14 @@ def main():
     print(f"Querying dimensions for {len(stripped_irreps)} irrep(s)...")
     dimensions = {}
     for irrep in stripped_irreps:
-        dim = get_irrep_dimension(args.parent, irrep, iso_exec=args.iso_exec)
+        debug_path = outdir / f"debug_dim_{irrep}.log" if args.debug else None
+        dim = get_irrep_dimension(
+            args.parent, irrep, iso_exec=args.iso_exec, debug_path=debug_path
+        )
         dimensions[irrep] = dim
         print(f"  {irrep}: dimension {dim}")
+        if args.debug:
+            print(f"    (iso.log saved to {debug_path})")
 
     # --- Step 2: variable map ---
     var_map = build_variable_map(args.irreps, dimensions, user_names)
@@ -115,10 +129,14 @@ def main():
     # --- Step 3: invariants ---
     stripped_for_iso = [_strip_magnetic(r)[1] for r in args.irreps]
     print(f"\nQuerying invariants (degree {degree[0]}-{degree[1]})...")
+    debug_path = outdir / "debug_invariants.log" if args.debug else None
     raw_invariants = get_invariants(
-        args.parent, stripped_for_iso, degree, iso_exec=args.iso_exec
+        args.parent, stripped_for_iso, degree,
+        iso_exec=args.iso_exec, debug_path=debug_path
     )
     print(f"  Found {len(raw_invariants)} invariant(s) before TRS filtering.")
+    if args.debug:
+        print(f"  (iso.log saved to {debug_path})")
 
     # --- Step 4: substitute (display mode for md/tex, code mode for py/nb) ---
     substituted_display = substitute_invariants(raw_invariants, var_map, mode="display")
@@ -147,9 +165,6 @@ def main():
             print(f"  No duplicates detected. {len(collapsed_display)} terms.")
 
     # --- Step 7: output ---
-    stem = make_stem(args.parent, args.irreps, degree)
-    outdir = Path(args.outdir) if args.outdir else Path(stem)
-    outdir.mkdir(parents=True, exist_ok=True)
     print(f"\nWriting output to {outdir}/")
 
     writers = {
@@ -160,19 +175,22 @@ def main():
     }
 
     file_stem = "invariants_collapsed" if args.collapse else "invariants"
-    for fmt in args.formats:
-        writer_fn, invariants, collapsed, ext = writers[fmt]
-        outpath = outdir / (file_stem + ext)
-        writer_fn(
-            outpath=outpath,
-            parent=args.parent,
-            irreps=args.irreps,
-            degree=degree,
-            var_map=var_map,
-            invariants=invariants,
-            collapsed=collapsed,
-            coeff_style=args.coeff_style,
-        )
+    if not args.debug_only:
+        for fmt in args.formats:
+            writer_fn, invariants, collapsed, ext = writers[fmt]
+            outpath = outdir / (file_stem + ext)
+            writer_fn(
+                outpath=outpath,
+                parent=args.parent,
+                irreps=args.irreps,
+                degree=degree,
+                var_map=var_map,
+                invariants=invariants,
+                collapsed=collapsed,
+                coeff_style=args.coeff_style,
+            )
+    else:
+        print("  --debug-only set -- skipping output file writing.")
 
     print("\nDone.")
 
