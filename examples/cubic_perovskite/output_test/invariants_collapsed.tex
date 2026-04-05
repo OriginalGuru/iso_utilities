@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{textcomp}
+\begin{document}
+
+\section*{Invariant Polynomials}
+
+\begin{tabular}{ll}
+\toprule
+Space group & 194 \\
+Irreps & \texttt{GM2\textminus{}}, \texttt{GM6\textminus{}}, \texttt{mGM2\textplus{}} \\
+Degree & 1--4 \\
+Total invariants & 9 \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Variable Map}
+
+\begin{tabular}{lll}
+\toprule
+iso name & display name & magnetic \\
+\midrule
+\texttt{n1} & \texttt{Pz} & no \\
+\texttt{n2} & \texttt{Qx} & no \\
+\texttt{n3} & \texttt{Qy} & no \\
+\texttt{n4} & \texttt{Mz} & yes \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Invariants}
+
+\subsubsection*{Degree 2}
+
+\begin{align*}
+I_{1} &= Pz^{2} \\
+I_{2} &= Qx^{2} + Qy^{2} \\
+I_{3} &= Mz^{2} \\
+\end{align*}
+
+\subsubsection*{Degree 4}
+
+\begin{align*}
+I_{4} &= Pz^{4} \\
+I_{5} &= Pz^{2}\,Qx^{2} + Pz^{2}\,Qy^{2} \\
+I_{6} &= Pz^{2}\,Mz^{2} \\
+I_{7} &= Qx^{4} + 2Qx^{2}\,Qy^{2} + Qy^{4} \\
+I_{8} &= Qx^{2}\,Mz^{2} + Qy^{2}\,Mz^{2} \\
+I_{9} &= Mz^{4} \\
+\end{align*}
+
+\subsection*{Free Energy}
+
+\begin{align*}
+F &=
+  &\quad c_{1} \left(Pz^{2}\right) \\
+  &\quad c_{2} \left(Qx^{2} + Qy^{2}\right) \\
+  &\quad c_{3} \left(Mz^{2}\right) \\
+  &\quad c_{4} \left(Pz^{4}\right) \\
+  &\quad c_{5} \left(Pz^{2}\,Qx^{2} + Pz^{2}\,Qy^{2}\right) \\
+  &\quad c_{6} \left(Pz^{2}\,Mz^{2}\right) \\
+  &\quad c_{7} \left(Qx^{4} + 2Qx^{2}\,Qy^{2} + Qy^{4}\right) \\
+  &\quad c_{8} \left(Qx^{2}\,Mz^{2} + Qy^{2}\,Mz^{2}\right) \\
+  &\quad c_{9} \left(Mz^{4}\right)
+\end{align*}
+
+\end{document}

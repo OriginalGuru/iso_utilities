@@ -1,0 +1,33 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+Notebook[{
+Cell[TextData[{"Invariant Polynomials\nSpace group: 194\nIrreps: GM2-, GM6-, mGM2+\nDegree: 1-4"}], "Title"],
+
+Cell[BoxData["{Pz, Qx, Qy, Mz}"], "Input"],
+
+Cell[BoxData["invariants = {
+  (Pz)^2  (* deg 2 *),
+  (Qx)^2 +(Qy)^2  (* deg 2 *),
+  (Mz)^2  (* deg 2 *),
+  (Pz)^4  (* deg 4 *),
+  (Pz)^2*(Qx)^2 +(Pz)^2*(Qy)^2  (* deg 4 *),
+  (Pz)^2*(Mz)^2  (* deg 4 *),
+  (Qx)^4 +2(Qx)^2*(Qy)^2 +(Qy)^4  (* deg 4 *),
+  (Qx)^2*(Mz)^2 +(Qy)^2*(Mz)^2  (* deg 4 *),
+  (Mz)^4  (* deg 4 *)
+};"], "Input"],
+
+Cell[BoxData["{c1, c2, c3, c4, c5, c6, c7, c8, c9}"], "Input"],
+
+Cell[BoxData["F = (
+  c1 * ((Pz)^2) +
+  c2 * ((Qx)^2 +(Qy)^2) +
+  c3 * ((Mz)^2) +
+  c4 * ((Pz)^4) +
+  c5 * ((Pz)^2*(Qx)^2 +(Pz)^2*(Qy)^2) +
+  c6 * ((Pz)^2*(Mz)^2) +
+  c7 * ((Qx)^4 +2(Qx)^2*(Qy)^2 +(Qy)^4) +
+  c8 * ((Qx)^2*(Mz)^2 +(Qy)^2*(Mz)^2) +
+  c9 * ((Mz)^4)
+);"], "Input"]
+}, WindowSize->{1200, 800}]
