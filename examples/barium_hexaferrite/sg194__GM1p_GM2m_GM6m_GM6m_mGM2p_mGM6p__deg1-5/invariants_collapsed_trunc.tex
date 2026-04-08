@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\begin{document}
+
+\section*{Truncated Invariant Polynomials}
+
+\begin{tabular}{ll}
+\toprule
+Source & \texttt{sg194__GM1p_GM2m_GM6m_GM6m_mGM2p_mGM6p__deg1-5/invariants_collapsed.py} \\
+Truncation & $ε \leq 2$, $ε+P \leq 2$, $ε+Qx+Qy \leq 2$, $ε+Ex+Ey \leq 2$, $ε+Mx+My \leq 2$ \\
+Surviving invariants & 35 \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Invariants}
+
+\begin{align*}
+I_{1} &= ε \\
+I_{2} &= ε^{2} \\
+I_{3} &= P^{2} \\
+I_{4} &= Qx^{2} + Qy^{2} \\
+I_{5} &= Ex Qx + Ey Qy \\
+I_{6} &= Ex^{2} + Ey^{2} \\
+I_{7} &= Mz^{2} \\
+I_{8} &= Mx^{2} + My^{2} \\
+I_{9} &= Ex Qx ε + Ey Qy ε \\
+I_{10} &= Mz^{2} ε \\
+I_{11} &= Mz^{2} ε^{2} \\
+I_{12} &= P^{2} Qx^{2} + P^{2} Qy^{2} \\
+I_{13} &= Ex P^{2} Qx + Ey P^{2} Qy \\
+I_{14} &= Ex^{2} P^{2} + Ey^{2} P^{2} \\
+I_{15} &= Mz^{2} P^{2} \\
+I_{16} &= Mx^{2} P^{2} + My^{2} P^{2} \\
+I_{17} &= Mx Mz P Qx + My Mz P Qy \\
+I_{18} &= Ex Mx Mz P + Ey My Mz P \\
+I_{19} &= Ex^{2} Qx^{2} + 2 Ex Ey Qx Qy + Ey^{2} Qy^{2} \\
+I_{20} &= Ex^{2} Qx^{2} + Ex^{2} Qy^{2} + Ey^{2} Qx^{2} + Ey^{2} Qy^{2} \\
+I_{21} &= Mz^{2} Qx^{2} + Mz^{2} Qy^{2} \\
+I_{22} &= Mx^{2} Qx^{2} + Mx^{2} Qy^{2} + My^{2} Qx^{2} + My^{2} Qy^{2} \\
+I_{23} &= 3 Mx^{2} Qx^{2} + Mx^{2} Qy^{2} + 4 Mx My Qx Qy + My^{2} Qx^{2} + 3 My^{2} Qy^{2} \\
+I_{24} &= Ex Mz^{2} Qx + Ey Mz^{2} Qy \\
+I_{25} &= Ex Mx^{2} Qx + Ex My^{2} Qx + Ey Mx^{2} Qy + Ey My^{2} Qy \\
+I_{26} &= 3 Ex Mx^{2} Qx + 2 Ex Mx My Qy + Ex My^{2} Qx + Ey Mx^{2} Qy + 2 Ey Mx My Qx + 3 Ey My^{2} Qy \\
+I_{27} &= Ex^{2} Mz^{2} + Ey^{2} Mz^{2} \\
+I_{28} &= Ex^{2} Mx^{2} + Ex^{2} My^{2} + Ey^{2} Mx^{2} + Ey^{2} My^{2} \\
+I_{29} &= 3 Ex^{2} Mx^{2} + Ex^{2} My^{2} + 4 Ex Ey Mx My + Ey^{2} Mx^{2} + 3 Ey^{2} My^{2} \\
+I_{30} &= Mz^{4} \\
+I_{31} &= Mx^{2} Mz^{2} + My^{2} Mz^{2} \\
+I_{32} &= Mx Mz P Qx ε + My Mz P Qy ε \\
+I_{33} &= Ex Mx Mz P ε + Ey My Mz P ε \\
+I_{34} &= Ex Mz^{2} Qx ε + Ey Mz^{2} Qy ε \\
+I_{35} &= Mz^{4} ε \\
+\end{align*}
+
+\subsection*{Free Energy}
+
+\begin{align*}
+F &= \\
+&\quad c_{1} \left(ε\right) \\
+&\quad c_{2} \left(ε^{2}\right) \\
+&\quad c_{3} \left(P^{2}\right) \\
+&\quad c_{4} \left(Qx^{2} + Qy^{2}\right) \\
+&\quad c_{5} \left(Ex Qx + Ey Qy\right) \\
+&\quad c_{6} \left(Ex^{2} + Ey^{2}\right) \\
+&\quad c_{7} \left(Mz^{2}\right) \\
+&\quad c_{8} \left(Mx^{2} + My^{2}\right) \\
+&\quad c_{9} \left(Ex Qx ε + Ey Qy ε\right) \\
+&\quad c_{10} \left(Mz^{2} ε\right) \\
+&\quad c_{11} \left(Mz^{2} ε^{2}\right) \\
+&\quad c_{12} \left(P^{2} Qx^{2} + P^{2} Qy^{2}\right) \\
+&\quad c_{13} \left(Ex P^{2} Qx + Ey P^{2} Qy\right) \\
+&\quad c_{14} \left(Ex^{2} P^{2} + Ey^{2} P^{2}\right) \\
+&\quad c_{15} \left(Mz^{2} P^{2}\right) \\
+&\quad c_{16} \left(Mx^{2} P^{2} + My^{2} P^{2}\right) \\
+&\quad c_{17} \left(Mx Mz P Qx + My Mz P Qy\right) \\
+&\quad c_{18} \left(Ex Mx Mz P + Ey My Mz P\right) \\
+&\quad c_{19} \left(Ex^{2} Qx^{2} + 2 Ex Ey Qx Qy + Ey^{2} Qy^{2}\right) \\
+&\quad c_{20} \left(Ex^{2} Qx^{2} + Ex^{2} Qy^{2} + Ey^{2} Qx^{2} + Ey^{2} Qy^{2}\right) \\
+&\quad c_{21} \left(Mz^{2} Qx^{2} + Mz^{2} Qy^{2}\right) \\
+&\quad c_{22} \left(Mx^{2} Qx^{2} + Mx^{2} Qy^{2} + My^{2} Qx^{2} + My^{2} Qy^{2}\right) \\
+&\quad c_{23} \left(3 Mx^{2} Qx^{2} + Mx^{2} Qy^{2} + 4 Mx My Qx Qy + My^{2} Qx^{2} + 3 My^{2} Qy^{2}\right) \\
+&\quad c_{24} \left(Ex Mz^{2} Qx + Ey Mz^{2} Qy\right) \\
+&\quad c_{25} \left(Ex Mx^{2} Qx + Ex My^{2} Qx + Ey Mx^{2} Qy + Ey My^{2} Qy\right) \\
+&\quad c_{26} \left(3 Ex Mx^{2} Qx + 2 Ex Mx My Qy + Ex My^{2} Qx + Ey Mx^{2} Qy + 2 Ey Mx My Qx + 3 Ey My^{2} Qy\right) \\
+&\quad c_{27} \left(Ex^{2} Mz^{2} + Ey^{2} Mz^{2}\right) \\
+&\quad c_{28} \left(Ex^{2} Mx^{2} + Ex^{2} My^{2} + Ey^{2} Mx^{2} + Ey^{2} My^{2}\right) \\
+&\quad c_{29} \left(3 Ex^{2} Mx^{2} + Ex^{2} My^{2} + 4 Ex Ey Mx My + Ey^{2} Mx^{2} + 3 Ey^{2} My^{2}\right) \\
+&\quad c_{30} \left(Mz^{4}\right) \\
+&\quad c_{31} \left(Mx^{2} Mz^{2} + My^{2} Mz^{2}\right) \\
+&\quad c_{32} \left(Mx Mz P Qx ε + My Mz P Qy ε\right) \\
+&\quad c_{33} \left(Ex Mx Mz P ε + Ey My Mz P ε\right) \\
+&\quad c_{34} \left(Ex Mz^{2} Qx ε + Ey Mz^{2} Qy ε\right) \\
+&\quad c_{35} \left(Mz^{4} ε\right)
+\end{align*}
+
+\subsection*{Coefficients}
+
+\begin{align*}
+c_{1} &= c_{1} \\
+c_{2} &= c_{2} \\
+c_{3} &= c_{3} \\
+c_{4} &= c_{4} \\
+c_{5} &= c_{5} \\
+c_{6} &= c_{6} \\
+c_{7} &= c_{7} \\
+c_{8} &= c_{8} \\
+c_{9} &= c_{12} \\
+c_{10} &= c_{14} \\
+c_{11} &= c_{21} \\
+c_{12} &= c_{24} \\
+c_{13} &= c_{25} \\
+c_{14} &= c_{26} \\
+c_{15} &= c_{27} \\
+c_{16} &= c_{28} \\
+c_{17} &= c_{29} \\
+c_{18} &= c_{30} \\
+c_{19} &= c_{33} \\
+c_{20} &= c_{34} \\
+c_{21} &= c_{35} \\
+c_{22} &= c_{36} \\
+c_{23} &= c_{37} \\
+c_{24} &= c_{39} \\
+c_{25} &= c_{40} \\
+c_{26} &= c_{41} \\
+c_{27} &= c_{43} \\
+c_{28} &= c_{44} \\
+c_{29} &= c_{45} \\
+c_{30} &= c_{46} \\
+c_{31} &= c_{47} \\
+c_{32} &= c_{62} \\
+c_{33} &= c_{63} \\
+c_{34} &= c_{72} \\
+c_{35} &= c_{79} \\
+\end{align*}
+
+\end{document}

@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\begin{document}
+
+\section*{Condensed Invariant Polynomials}
+
+\begin{tabular}{ll}
+\toprule
+Source & \texttt{output_test} \\
+Condensation & $P \to P_{0} + dP$, $Mz \to Mz_{0} + dMz$ \\
+Static variables & $P_{0}$, $Mz_{0}$ \\
+Dynamic variables & $dP$, $dMz$, $ε$, $Qx$, $Qy$, $Ex$, $Ey$, $Mx$, $My$ \\
+New invariants & 44 \\
+\bottomrule
+\end{tabular}
+
+\subsection*{New Invariants}
+
+\begin{align*}
+I_{1} &= 1 \\
+I_{2} &= dMz \\
+I_{3} &= ε \\
+I_{4} &= dP \\
+I_{5} &= dMz^{2} \\
+I_{6} &= dMz ε \\
+I_{7} &= ε^{2} \\
+I_{8} &= dP^{2} \\
+I_{9} &= Qx^{2} + Qy^{2} \\
+I_{10} &= Ex Qx + Ey Qy \\
+I_{11} &= Ex^{2} + Ey^{2} \\
+I_{12} &= Mx^{2} + My^{2} \\
+I_{13} &= dMz dP \\
+I_{14} &= Mx Qx + My Qy \\
+I_{15} &= Ex Mx + Ey My \\
+I_{16} &= dP ε \\
+I_{17} &= dMz^{2} ε \\
+I_{18} &= dMz ε^{2} \\
+I_{19} &= dMz dP^{2} \\
+I_{20} &= Qx^{2} dMz + Qy^{2} dMz \\
+I_{21} &= Ex Qx dMz + Ey Qy dMz \\
+I_{22} &= Ex^{2} dMz + Ey^{2} dMz \\
+I_{23} &= Mx^{2} dMz + My^{2} dMz \\
+I_{24} &= dMz^{3} \\
+I_{25} &= Mx Qx dP + My Qy dP \\
+I_{26} &= Ex Mx dP + Ey My dP \\
+I_{27} &= ε^{3} \\
+I_{28} &= dP^{2} ε \\
+I_{29} &= Qx^{2} ε + Qy^{2} ε \\
+I_{30} &= Ex Qx ε + Ey Qy ε \\
+I_{31} &= Ex^{2} ε + Ey^{2} ε \\
+I_{32} &= Mx^{2} ε + My^{2} ε \\
+I_{33} &= dMz dP ε \\
+I_{34} &= Mx Qx ε + My Qy ε \\
+I_{35} &= Ex Mx ε + Ey My ε \\
+I_{36} &= Mx Qx dMz + My Qy dMz \\
+I_{37} &= Ex Mx dMz + Ey My dMz \\
+I_{38} &= dMz^{2} dP \\
+I_{39} &= dP^{3} \\
+I_{40} &= Qx^{2} dP + Qy^{2} dP \\
+I_{41} &= Ex Qx dP + Ey Qy dP \\
+I_{42} &= Ex^{2} dP + Ey^{2} dP \\
+I_{43} &= Mx^{2} dP + My^{2} dP \\
+I_{44} &= dP ε^{2} \\
+\end{align*}
+
+\subsection*{Condensed Free Energy}
+
+\begin{align*}
+F &= \\
+&\quad \beta_{1} \left(1\right) \\
+&\quad \beta_{2} \left(dMz\right) \\
+&\quad \beta_{3} \left(ε\right) \\
+&\quad \beta_{4} \left(dP\right) \\
+&\quad \beta_{5} \left(dMz^{2}\right) \\
+&\quad \beta_{6} \left(dMz ε\right) \\
+&\quad \beta_{7} \left(ε^{2}\right) \\
+&\quad \beta_{8} \left(dP^{2}\right) \\
+&\quad \beta_{9} \left(Qx^{2} + Qy^{2}\right) \\
+&\quad \beta_{10} \left(Ex Qx + Ey Qy\right) \\
+&\quad \beta_{11} \left(Ex^{2} + Ey^{2}\right) \\
+&\quad \beta_{12} \left(Mx^{2} + My^{2}\right) \\
+&\quad \beta_{13} \left(dMz dP\right) \\
+&\quad \beta_{14} \left(Mx Qx + My Qy\right) \\
+&\quad \beta_{15} \left(Ex Mx + Ey My\right) \\
+&\quad \beta_{16} \left(dP ε\right) \\
+&\quad \beta_{17} \left(dMz^{2} ε\right) \\
+&\quad \beta_{18} \left(dMz ε^{2}\right) \\
+&\quad \beta_{19} \left(dMz dP^{2}\right) \\
+&\quad \beta_{20} \left(Qx^{2} dMz + Qy^{2} dMz\right) \\
+&\quad \beta_{21} \left(Ex Qx dMz + Ey Qy dMz\right) \\
+&\quad \beta_{22} \left(Ex^{2} dMz + Ey^{2} dMz\right) \\
+&\quad \beta_{23} \left(Mx^{2} dMz + My^{2} dMz\right) \\
+&\quad \beta_{24} \left(dMz^{3}\right) \\
+&\quad \beta_{25} \left(Mx Qx dP + My Qy dP\right) \\
+&\quad \beta_{26} \left(Ex Mx dP + Ey My dP\right) \\
+&\quad \beta_{27} \left(ε^{3}\right) \\
+&\quad \beta_{28} \left(dP^{2} ε\right) \\
+&\quad \beta_{29} \left(Qx^{2} ε + Qy^{2} ε\right) \\
+&\quad \beta_{30} \left(Ex Qx ε + Ey Qy ε\right) \\
+&\quad \beta_{31} \left(Ex^{2} ε + Ey^{2} ε\right) \\
+&\quad \beta_{32} \left(Mx^{2} ε + My^{2} ε\right) \\
+&\quad \beta_{33} \left(dMz dP ε\right) \\
+&\quad \beta_{34} \left(Mx Qx ε + My Qy ε\right) \\
+&\quad \beta_{35} \left(Ex Mx ε + Ey My ε\right) \\
+&\quad \beta_{36} \left(Mx Qx dMz + My Qy dMz\right) \\
+&\quad \beta_{37} \left(Ex Mx dMz + Ey My dMz\right) \\
+&\quad \beta_{38} \left(dMz^{2} dP\right) \\
+&\quad \beta_{39} \left(dP^{3}\right) \\
+&\quad \beta_{40} \left(Qx^{2} dP + Qy^{2} dP\right) \\
+&\quad \beta_{41} \left(Ex Qx dP + Ey Qy dP\right) \\
+&\quad \beta_{42} \left(Ex^{2} dP + Ey^{2} dP\right) \\
+&\quad \beta_{43} \left(Mx^{2} dP + My^{2} dP\right) \\
+&\quad \beta_{44} \left(dP ε^{2}\right)
+\end{align*}
+
+\subsection*{Coefficient Mapping}
+
+\begin{align*}
+\beta_{1} &= Mz_{0}^{6} \alpha_{211} + Mz_{0}^{4} P_{0}^{2} \alpha_{138} + Mz_{0}^{4} \alpha_{46} + Mz_{0}^{2} P_{0}^{4} \alpha_{119} + Mz_{0}^{2} P_{0}^{2} \alpha_{27} + Mz_{0}^{2} \alpha_{7} + P_{0}^{6} \alpha_{115} + P_{0}^{4} \alpha_{23} + P_{0}^{2} \alpha_{3} \\
+\beta_{2} &= 2 Mz_{0} \left(3 Mz_{0}^{4} \alpha_{211} + 2 Mz_{0}^{2} P_{0}^{2} \alpha_{138} + 2 Mz_{0}^{2} \alpha_{46} + P_{0}^{4} \alpha_{119} + P_{0}^{2} \alpha_{27} + \alpha_{7}\right) \\
+\beta_{3} &= Mz_{0}^{6} \alpha_{345} + Mz_{0}^{4} P_{0}^{2} \alpha_{272} + Mz_{0}^{4} \alpha_{79} + Mz_{0}^{2} P_{0}^{4} \alpha_{253} + Mz_{0}^{2} P_{0}^{2} \alpha_{60} + Mz_{0}^{2} \alpha_{14} + P_{0}^{6} \alpha_{249} + P_{0}^{4} \alpha_{56} + P_{0}^{2} \alpha_{10} + \alpha_{1} \\
+\beta_{4} &= 2 P_{0} \left(Mz_{0}^{4} \alpha_{138} + 2 Mz_{0}^{2} P_{0}^{2} \alpha_{119} + Mz_{0}^{2} \alpha_{27} + 3 P_{0}^{4} \alpha_{115} + 2 P_{0}^{2} \alpha_{23} + \alpha_{3}\right) \\
+\beta_{5} &= 15 Mz_{0}^{4} \alpha_{211} + 6 Mz_{0}^{2} P_{0}^{2} \alpha_{138} + 6 Mz_{0}^{2} \alpha_{46} + P_{0}^{4} \alpha_{119} + P_{0}^{2} \alpha_{27} + \alpha_{7} \\
+\beta_{6} &= 2 Mz_{0} \left(3 Mz_{0}^{4} \alpha_{345} + 2 Mz_{0}^{2} P_{0}^{2} \alpha_{272} + 2 Mz_{0}^{2} \alpha_{79} + P_{0}^{4} \alpha_{253} + P_{0}^{2} \alpha_{60} + \alpha_{14}\right) \\
+\beta_{7} &= Mz_{0}^{4} \alpha_{112} + Mz_{0}^{2} P_{0}^{2} \alpha_{93} + Mz_{0}^{2} \alpha_{21} + P_{0}^{4} \alpha_{89} + P_{0}^{2} \alpha_{17} + \alpha_{2} \\
+\beta_{8} &= Mz_{0}^{4} \alpha_{138} + 6 Mz_{0}^{2} P_{0}^{2} \alpha_{119} + Mz_{0}^{2} \alpha_{27} + 15 P_{0}^{4} \alpha_{115} + 6 P_{0}^{2} \alpha_{23} + \alpha_{3} \\
+\beta_{9} &= Mz_{0}^{4} \alpha_{180} + Mz_{0}^{2} P_{0}^{2} \alpha_{127} + Mz_{0}^{2} \alpha_{35} + P_{0}^{4} \alpha_{116} + P_{0}^{2} \alpha_{24} + \alpha_{4} \\
+\beta_{10} &= Mz_{0}^{4} \alpha_{193} + Mz_{0}^{2} P_{0}^{2} \alpha_{131} + Mz_{0}^{2} \alpha_{39} + P_{0}^{4} \alpha_{117} + P_{0}^{2} \alpha_{25} + \alpha_{5} \\
+\beta_{11} &= Mz_{0}^{4} \alpha_{205} + Mz_{0}^{2} P_{0}^{2} \alpha_{135} + Mz_{0}^{2} \alpha_{43} + P_{0}^{4} \alpha_{118} + P_{0}^{2} \alpha_{26} + \alpha_{6} \\
+\beta_{12} &= Mz_{0}^{4} \alpha_{212} + Mz_{0}^{2} P_{0}^{2} \alpha_{139} + Mz_{0}^{2} \alpha_{47} + P_{0}^{4} \alpha_{120} + P_{0}^{2} \alpha_{28} + \alpha_{8} \\
+\beta_{13} &= 4 Mz_{0} P_{0} \left(2 Mz_{0}^{2} \alpha_{138} + 2 P_{0}^{2} \alpha_{119} + \alpha_{27}\right) \\
+\beta_{14} &= Mz_{0} P_{0} \left(Mz_{0}^{2} \alpha_{146} + P_{0}^{2} \alpha_{121} + \alpha_{29}\right) \\
+\beta_{15} &= Mz_{0} P_{0} \left(Mz_{0}^{2} \alpha_{149} + P_{0}^{2} \alpha_{122} + \alpha_{30}\right) \\
+\beta_{16} &= 2 P_{0} \left(Mz_{0}^{4} \alpha_{272} + 2 Mz_{0}^{2} P_{0}^{2} \alpha_{253} + Mz_{0}^{2} \alpha_{60} + 3 P_{0}^{4} \alpha_{249} + 2 P_{0}^{2} \alpha_{56} + \alpha_{10}\right) \\
+\beta_{17} &= 15 Mz_{0}^{4} \alpha_{345} + 6 Mz_{0}^{2} P_{0}^{2} \alpha_{272} + 6 Mz_{0}^{2} \alpha_{79} + P_{0}^{4} \alpha_{253} + P_{0}^{2} \alpha_{60} + \alpha_{14} \\
+\beta_{18} &= 2 Mz_{0} \left(2 Mz_{0}^{2} \alpha_{112} + P_{0}^{2} \alpha_{93} + \alpha_{21}\right) \\
+\beta_{19} &= 2 Mz_{0} \left(2 Mz_{0}^{2} \alpha_{138} + 6 P_{0}^{2} \alpha_{119} + \alpha_{27}\right) \\
+\beta_{20} &= 2 Mz_{0} \left(2 Mz_{0}^{2} \alpha_{180} + P_{0}^{2} \alpha_{127} + \alpha_{35}\right) \\
+\beta_{21} &= 2 Mz_{0} \left(2 Mz_{0}^{2} \alpha_{193} + P_{0}^{2} \alpha_{131} + \alpha_{39}\right) \\
+\beta_{22} &= 2 Mz_{0} \left(2 Mz_{0}^{2} \alpha_{205} + P_{0}^{2} \alpha_{135} + \alpha_{43}\right) \\
+\beta_{23} &= 2 Mz_{0} \left(2 Mz_{0}^{2} \alpha_{212} + P_{0}^{2} \alpha_{139} + \alpha_{47}\right) \\
+\beta_{24} &= 4 Mz_{0} \left(5 Mz_{0}^{2} \alpha_{211} + P_{0}^{2} \alpha_{138} + \alpha_{46}\right) \\
+\beta_{25} &= Mz_{0} \left(Mz_{0}^{2} \alpha_{146} + 3 P_{0}^{2} \alpha_{121} + \alpha_{29}\right) \\
+\beta_{26} &= Mz_{0} \left(Mz_{0}^{2} \alpha_{149} + 3 P_{0}^{2} \alpha_{122} + \alpha_{30}\right) \\
+\beta_{27} &= Mz_{0}^{4} \alpha_{246} + Mz_{0}^{2} P_{0}^{2} \alpha_{227} + Mz_{0}^{2} \alpha_{54} + P_{0}^{4} \alpha_{223} + P_{0}^{2} \alpha_{50} + \alpha_{9} \\
+\beta_{28} &= Mz_{0}^{4} \alpha_{272} + 6 Mz_{0}^{2} P_{0}^{2} \alpha_{253} + Mz_{0}^{2} \alpha_{60} + 15 P_{0}^{4} \alpha_{249} + 6 P_{0}^{2} \alpha_{56} + \alpha_{10} \\
+\beta_{29} &= Mz_{0}^{4} \alpha_{314} + Mz_{0}^{2} P_{0}^{2} \alpha_{261} + Mz_{0}^{2} \alpha_{68} + P_{0}^{4} \alpha_{250} + P_{0}^{2} \alpha_{57} + \alpha_{11} \\
+\beta_{30} &= Mz_{0}^{4} \alpha_{327} + Mz_{0}^{2} P_{0}^{2} \alpha_{265} + Mz_{0}^{2} \alpha_{72} + P_{0}^{4} \alpha_{251} + P_{0}^{2} \alpha_{58} + \alpha_{12} \\
+\beta_{31} &= Mz_{0}^{4} \alpha_{339} + Mz_{0}^{2} P_{0}^{2} \alpha_{269} + Mz_{0}^{2} \alpha_{76} + P_{0}^{4} \alpha_{252} + P_{0}^{2} \alpha_{59} + \alpha_{13} \\
+\beta_{32} &= Mz_{0}^{4} \alpha_{346} + Mz_{0}^{2} P_{0}^{2} \alpha_{273} + Mz_{0}^{2} \alpha_{80} + P_{0}^{4} \alpha_{254} + P_{0}^{2} \alpha_{61} + \alpha_{15} \\
+\beta_{33} &= 4 Mz_{0} P_{0} \left(2 Mz_{0}^{2} \alpha_{272} + 2 P_{0}^{2} \alpha_{253} + \alpha_{60}\right) \\
+\beta_{34} &= Mz_{0} P_{0} \left(Mz_{0}^{2} \alpha_{280} + P_{0}^{2} \alpha_{255} + \alpha_{62}\right) \\
+\beta_{35} &= Mz_{0} P_{0} \left(Mz_{0}^{2} \alpha_{283} + P_{0}^{2} \alpha_{256} + \alpha_{63}\right) \\
+\beta_{36} &= P_{0} \left(3 Mz_{0}^{2} \alpha_{146} + P_{0}^{2} \alpha_{121} + \alpha_{29}\right) \\
+\beta_{37} &= P_{0} \left(3 Mz_{0}^{2} \alpha_{149} + P_{0}^{2} \alpha_{122} + \alpha_{30}\right) \\
+\beta_{38} &= 2 P_{0} \left(6 Mz_{0}^{2} \alpha_{138} + 2 P_{0}^{2} \alpha_{119} + \alpha_{27}\right) \\
+\beta_{39} &= 4 P_{0} \left(Mz_{0}^{2} \alpha_{119} + 5 P_{0}^{2} \alpha_{115} + \alpha_{23}\right) \\
+\beta_{40} &= 2 P_{0} \left(Mz_{0}^{2} \alpha_{127} + 2 P_{0}^{2} \alpha_{116} + \alpha_{24}\right) \\
+\beta_{41} &= 2 P_{0} \left(Mz_{0}^{2} \alpha_{131} + 2 P_{0}^{2} \alpha_{117} + \alpha_{25}\right) \\
+\beta_{42} &= 2 P_{0} \left(Mz_{0}^{2} \alpha_{135} + 2 P_{0}^{2} \alpha_{118} + \alpha_{26}\right) \\
+\beta_{43} &= 2 P_{0} \left(Mz_{0}^{2} \alpha_{139} + 2 P_{0}^{2} \alpha_{120} + \alpha_{28}\right) \\
+\beta_{44} &= 2 P_{0} \left(Mz_{0}^{2} \alpha_{93} + 2 P_{0}^{2} \alpha_{89} + \alpha_{17}\right) \\
+\end{align*}
+
+\end{document}

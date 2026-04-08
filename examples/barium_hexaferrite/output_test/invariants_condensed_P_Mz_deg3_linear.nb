@@ -1,0 +1,146 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+Notebook[{
+Cell[TextData[{"Condensed Invariant Polynomials\nSource: output_test\nCondensation: P -> P0+dP, Mz -> Mz0+dMz"}], "Title"],
+
+Cell[BoxData["{dP, dMz, ε, Qx, Qy, Ex, Ey, Mx, My, P0, Mz0}"], "Input"],
+
+Cell[BoxData["
+beta1 = 2*Mz0*alpha7
+beta2 = alpha1
+beta3 = 2*P0*alpha3
+beta4 = alpha7
+beta5 = 2*Mz0*alpha14
+beta6 = alpha2
+beta7 = alpha3
+beta8 = alpha4
+beta9 = alpha5
+beta10 = alpha6
+beta11 = alpha8
+beta12 = 4*Mz0*P0*alpha27
+beta13 = Mz0*P0*alpha29
+beta14 = Mz0*P0*alpha30
+beta15 = 2*P0*alpha10
+beta16 = alpha14
+beta17 = 2*Mz0*alpha21
+beta18 = 2*Mz0*alpha27
+beta19 = 2*Mz0*alpha35
+beta20 = 2*Mz0*alpha39
+beta21 = 2*Mz0*alpha43
+beta22 = 2*Mz0*alpha47
+beta23 = 4*Mz0*alpha46
+beta24 = Mz0*alpha29
+beta25 = Mz0*alpha30
+beta26 = alpha9
+beta27 = alpha10
+beta28 = alpha11
+beta29 = alpha12
+beta30 = alpha13
+beta31 = alpha15
+beta32 = 4*Mz0*P0*alpha60
+beta33 = Mz0*P0*alpha62
+beta34 = Mz0*P0*alpha63
+beta35 = P0*alpha29
+beta36 = P0*alpha30
+beta37 = 2*P0*alpha27
+beta38 = 4*P0*alpha23
+beta39 = 2*P0*alpha24
+beta40 = 2*P0*alpha25
+beta41 = 2*P0*alpha26
+beta42 = 2*P0*alpha28
+beta43 = 2*P0*alpha17
+"], "Input"],
+
+Cell[BoxData["invariants = {
+  dMz,  (* deg 1 *)
+  ε,  (* deg 1 *)
+  dP,  (* deg 1 *)
+  dMz^2,  (* deg 2 *)
+  dMz*ε,  (* deg 2 *)
+  ε^2,  (* deg 2 *)
+  dP^2,  (* deg 2 *)
+  Qx^2 + Qy^2,  (* deg 2 *)
+  Ex*Qx + Ey*Qy,  (* deg 2 *)
+  Ex^2 + Ey^2,  (* deg 2 *)
+  Mx^2 + My^2,  (* deg 2 *)
+  dMz*dP,  (* deg 2 *)
+  Mx*Qx + My*Qy,  (* deg 2 *)
+  Ex*Mx + Ey*My,  (* deg 2 *)
+  dP*ε,  (* deg 2 *)
+  dMz^2*ε,  (* deg 3 *)
+  dMz*ε^2,  (* deg 3 *)
+  dMz*dP^2,  (* deg 3 *)
+  Qx^2*dMz + Qy^2*dMz,  (* deg 3 *)
+  Ex*Qx*dMz + Ey*Qy*dMz,  (* deg 3 *)
+  Ex^2*dMz + Ey^2*dMz,  (* deg 3 *)
+  Mx^2*dMz + My^2*dMz,  (* deg 3 *)
+  dMz^3,  (* deg 3 *)
+  Mx*Qx*dP + My*Qy*dP,  (* deg 3 *)
+  Ex*Mx*dP + Ey*My*dP,  (* deg 3 *)
+  ε^3,  (* deg 3 *)
+  dP^2*ε,  (* deg 3 *)
+  Qx^2*ε + Qy^2*ε,  (* deg 3 *)
+  Ex*Qx*ε + Ey*Qy*ε,  (* deg 3 *)
+  Ex^2*ε + Ey^2*ε,  (* deg 3 *)
+  Mx^2*ε + My^2*ε,  (* deg 3 *)
+  dMz*dP*ε,  (* deg 3 *)
+  Mx*Qx*ε + My*Qy*ε,  (* deg 3 *)
+  Ex*Mx*ε + Ey*My*ε,  (* deg 3 *)
+  Mx*Qx*dMz + My*Qy*dMz,  (* deg 3 *)
+  Ex*Mx*dMz + Ey*My*dMz,  (* deg 3 *)
+  dMz^2*dP,  (* deg 3 *)
+  dP^3,  (* deg 3 *)
+  Qx^2*dP + Qy^2*dP,  (* deg 3 *)
+  Ex*Qx*dP + Ey*Qy*dP,  (* deg 3 *)
+  Ex^2*dP + Ey^2*dP,  (* deg 3 *)
+  Mx^2*dP + My^2*dP,  (* deg 3 *)
+  dP*ε^2,  (* deg 3 *)
+};"], "Input"],
+
+Cell[BoxData["F = (
+  beta1 * (dMz) +
+  beta2 * (ε) +
+  beta3 * (dP) +
+  beta4 * (dMz^2) +
+  beta5 * (dMz*ε) +
+  beta6 * (ε^2) +
+  beta7 * (dP^2) +
+  beta8 * (Qx^2 + Qy^2) +
+  beta9 * (Ex*Qx + Ey*Qy) +
+  beta10 * (Ex^2 + Ey^2) +
+  beta11 * (Mx^2 + My^2) +
+  beta12 * (dMz*dP) +
+  beta13 * (Mx*Qx + My*Qy) +
+  beta14 * (Ex*Mx + Ey*My) +
+  beta15 * (dP*ε) +
+  beta16 * (dMz^2*ε) +
+  beta17 * (dMz*ε^2) +
+  beta18 * (dMz*dP^2) +
+  beta19 * (Qx^2*dMz + Qy^2*dMz) +
+  beta20 * (Ex*Qx*dMz + Ey*Qy*dMz) +
+  beta21 * (Ex^2*dMz + Ey^2*dMz) +
+  beta22 * (Mx^2*dMz + My^2*dMz) +
+  beta23 * (dMz^3) +
+  beta24 * (Mx*Qx*dP + My*Qy*dP) +
+  beta25 * (Ex*Mx*dP + Ey*My*dP) +
+  beta26 * (ε^3) +
+  beta27 * (dP^2*ε) +
+  beta28 * (Qx^2*ε + Qy^2*ε) +
+  beta29 * (Ex*Qx*ε + Ey*Qy*ε) +
+  beta30 * (Ex^2*ε + Ey^2*ε) +
+  beta31 * (Mx^2*ε + My^2*ε) +
+  beta32 * (dMz*dP*ε) +
+  beta33 * (Mx*Qx*ε + My*Qy*ε) +
+  beta34 * (Ex*Mx*ε + Ey*My*ε) +
+  beta35 * (Mx*Qx*dMz + My*Qy*dMz) +
+  beta36 * (Ex*Mx*dMz + Ey*My*dMz) +
+  beta37 * (dMz^2*dP) +
+  beta38 * (dP^3) +
+  beta39 * (Qx^2*dP + Qy^2*dP) +
+  beta40 * (Ex*Qx*dP + Ey*Qy*dP) +
+  beta41 * (Ex^2*dP + Ey^2*dP) +
+  beta42 * (Mx^2*dP + My^2*dP) +
+  beta43 * (dP*ε^2)
+);"], "Input"]
+
+}, WindowSize->{1200, 800}]

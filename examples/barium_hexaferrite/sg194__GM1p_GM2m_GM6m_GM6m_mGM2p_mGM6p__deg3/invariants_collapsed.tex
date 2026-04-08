@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{textcomp}
+\begin{document}
+
+\section*{Invariant Polynomials}
+
+\begin{tabular}{ll}
+\toprule
+Space group & 194 \\
+Irreps & \texttt{GM1\textplus{}}, \texttt{GM2\textminus{}}, \texttt{GM6\textminus{}}, \texttt{GM6\textminus{}}, \texttt{mGM2\textplus{}}, \texttt{mGM6\textplus{}} \\
+Degree & 3 \\
+Total invariants & 7 \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Variable Map}
+
+\begin{tabular}{lll}
+\toprule
+iso name & display name & magnetic \\
+\midrule
+\texttt{n1} & \texttt{ε} & no \\
+\texttt{n2} & \texttt{P} & no \\
+\texttt{n3} & \texttt{Qx} & no \\
+\texttt{n4} & \texttt{Qy} & no \\
+\texttt{n5} & \texttt{Ex} & no \\
+\texttt{n6} & \texttt{Ey} & no \\
+\texttt{n7} & \texttt{Mz} & yes \\
+\texttt{n8} & \texttt{Mx} & yes \\
+\texttt{n9} & \texttt{My} & yes \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Invariants}
+
+\subsubsection*{Degree 3}
+
+\begin{align*}
+I_{1} &= ε^{3} \\
+I_{2} &= ε\,P^{2} \\
+I_{3} &= ε\,Qx^{2} + ε\,Qy^{2} \\
+I_{4} &= ε\,Qx\,Ex + ε\,Qy\,Ey \\
+I_{5} &= ε\,Ex^{2} + ε\,Ey^{2} \\
+I_{6} &= ε\,Mz^{2} \\
+I_{7} &= ε\,Mx^{2} + ε\,My^{2} \\
+\end{align*}
+
+\subsection*{Free Energy}
+
+\begin{align*}
+F &=
+  &\quad c_{1} \left(ε^{3}\right) \\
+  &\quad c_{2} \left(ε\,P^{2}\right) \\
+  &\quad c_{3} \left(ε\,Qx^{2} + ε\,Qy^{2}\right) \\
+  &\quad c_{4} \left(ε\,Qx\,Ex + ε\,Qy\,Ey\right) \\
+  &\quad c_{5} \left(ε\,Ex^{2} + ε\,Ey^{2}\right) \\
+  &\quad c_{6} \left(ε\,Mz^{2}\right) \\
+  &\quad c_{7} \left(ε\,Mx^{2} + ε\,My^{2}\right)
+\end{align*}
+
+\end{document}
